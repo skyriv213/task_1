@@ -31,14 +31,15 @@ public class PostController {
         return postService.getSomeList(id);
     }
 
-    @PutMapping("/api")
+    @PatchMapping("/api")
     public Long modifiedText(@RequestParam("id") Long id, @RequestBody PostRequestDtos postRequestDtos) {
         return postService.modifiedText(id,postRequestDtos);
     }
 
 
     @DeleteMapping("/api")
-    public void deletePost(@RequestParam("id") Long id, @RequestParam("password") String password) {
+    public String deletePost(@RequestParam("id") Long id, @RequestParam("password") String password) {
         postService.deletePost(id,password);
+        return String.valueOf(id) + "의 글이 삭제 완료되었습니다";
     }
 }
