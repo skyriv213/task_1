@@ -18,7 +18,7 @@ public class PostService {
 
     @Transactional()
     public List<Post> getAllList() {
-        List<Post> allList = postRepository.findAllByOrderByModifiedAt();
+        List<Post> allList = postRepository.findAllByOrderByModifiedAtDesc();
         return allList;
     }
 
