@@ -1,7 +1,7 @@
 package com.example.page.entiity;
 
 
-import com.example.page.dtos.PostRequestDtos;
+import com.example.page.dtos.PostDtos;
 
 import lombok.*;
 
@@ -27,14 +27,15 @@ public class Post extends Timestamped{
     private String text;
 
 
-    public Post(PostRequestDtos postRequestDtos) {
-        this.name = postRequestDtos.getName();
-        this.password = postRequestDtos.getPassword();
-        this.text = postRequestDtos.getText();
+    public Post(PostDtos postDtos) {
+        this.name = postDtos.getName();
+        this.password = postDtos.getPassword();
+        this.text = postDtos.getText();
 
     }
 
-    public void update(PostRequestDtos postRequestDtos) {
+
+    public void update(PostDtos postRequestDtos) {
         this.text = postRequestDtos.getText();
     }
 }

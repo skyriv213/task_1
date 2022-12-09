@@ -1,11 +1,9 @@
 package com.example.page.controller;
 
-import com.example.page.dtos.PostRequestDtos;
+import com.example.page.dtos.PostDtos;
 import com.example.page.entiity.Post;
 import com.example.page.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +20,9 @@ public class PostController {
     }
 
     @PostMapping("/api")
-    public void postingSomething(@RequestBody PostRequestDtos postRequestDtos) {
-        postService.createPosting(postRequestDtos);
+    public void postingSomething(@RequestBody PostDtos postDtos) {
+
+        postService.createPosting(postDtos);
     }
 
     @GetMapping("/api/{id}")
@@ -32,14 +31,14 @@ public class PostController {
     }
 
     @PatchMapping("/api")
-    public Long modifiedText(@RequestParam("id") Long id, @RequestBody PostRequestDtos postRequestDtos) {
-        return postService.modifiedText(id,postRequestDtos);
+    public String modifiedText(@RequestParam("id") Long id, @RequestBody PostDtos postDtos, @RequestParam("password") String password) {
+        return postService.modifiedText(id, postDtos, password);
     }
 
 
     @DeleteMapping("/api")
     public String deletePost(@RequestParam("id") Long id, @RequestParam("password") String password) {
-        postService.deletePost(id,password);
-        return String.valueOf(id) + "의 글이 삭제 완료되었습니다";
+        return postService.deletePost(id,password);
+
     }
 }
