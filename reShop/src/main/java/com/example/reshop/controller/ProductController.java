@@ -4,6 +4,7 @@ import com.example.reshop.dtos.ProductMypriceRequestDto;
 import com.example.reshop.dtos.ProductRequestDto;
 import com.example.reshop.dtos.ProductResponseDto;
 import com.example.reshop.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -11,8 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ProductController {
-    ProductService productService = new ProductService();
+    private final ProductService productService;
     // 관심 상품 등록하기
     @PostMapping("/products")
     public ProductResponseDto createProduct(@RequestBody ProductRequestDto requestDto) throws SQLException {

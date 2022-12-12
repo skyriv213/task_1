@@ -5,13 +5,16 @@ import com.example.reshop.dtos.ProductRequestDto;
 import com.example.reshop.dtos.ProductResponseDto;
 import com.example.reshop.entity.Product;
 import com.example.reshop.repository.ProductRepository;
-import com.example.reshop.repository.ProductRepositoryImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class ProductService {
-    ProductRepository productRepository = new ProductRepositoryImpl();
+    private final ProductRepository productRepository;
 
     public ProductResponseDto createProduct(ProductRequestDto requestDto) throws SQLException {
         Product product = new Product(requestDto);
