@@ -6,6 +6,7 @@ import com.example.page.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class PostService {
         postRepository.save(post);
 
     }
+
 
     @Transactional
     public List<Post> getSomeList(Long id) {
