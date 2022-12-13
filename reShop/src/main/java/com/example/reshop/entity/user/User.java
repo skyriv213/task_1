@@ -2,13 +2,11 @@ package com.example.reshop.entity.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
 @Entity(name = "users")
-@Setter
 @NoArgsConstructor
 public class User {
     @Id
@@ -36,3 +34,4 @@ public class User {
     }
 
 }
+
