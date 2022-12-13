@@ -1,8 +1,8 @@
 package com.example.reshop.entity;
 
 import com.example.reshop.dtos.ItemDto;
-import com.example.reshop.dtos.ProductMypriceRequestDto;
-import com.example.reshop.dtos.ProductRequestDto;
+import com.example.reshop.dtos.product.ProductMypriceRequestDto;
+import com.example.reshop.dtos.product.ProductRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

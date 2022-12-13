@@ -1,4 +1,4 @@
-package com.example.reshop.dtos;
+package com.example.reshop.dtos.product;
 
 import com.example.reshop.entity.Product;
 import lombok.Getter;

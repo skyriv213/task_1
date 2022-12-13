@@ -1,8 +1,8 @@
 package com.example.reshop.controller;
 
-import com.example.reshop.dtos.ProductMypriceRequestDto;
-import com.example.reshop.dtos.ProductRequestDto;
-import com.example.reshop.dtos.ProductResponseDto;
+import com.example.reshop.dtos.product.ProductMypriceRequestDto;
+import com.example.reshop.dtos.product.ProductRequestDto;
+import com.example.reshop.dtos.product.ProductResponseDto;
 import com.example.reshop.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

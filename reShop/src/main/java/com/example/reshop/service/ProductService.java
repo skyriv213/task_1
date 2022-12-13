@@ -1,9 +1,9 @@
 package com.example.reshop.service;
 
 import com.example.reshop.dtos.ItemDto;
-import com.example.reshop.dtos.ProductMypriceRequestDto;
-import com.example.reshop.dtos.ProductRequestDto;
-import com.example.reshop.dtos.ProductResponseDto;
+import com.example.reshop.dtos.product.ProductMypriceRequestDto;
+import com.example.reshop.dtos.product.ProductRequestDto;
+import com.example.reshop.dtos.product.ProductResponseDto;
 
 import java.util.List;
 
