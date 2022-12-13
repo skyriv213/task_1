@@ -33,7 +33,7 @@ public class Sceduler {
             ItemDto itemDto = itemDtoList.get(0);
 
             Long id = product.getId();
-            productService.updatedBySearch(id, itemDto);
+            productService.updateBySearch(id, itemDto);
 
         }
     }

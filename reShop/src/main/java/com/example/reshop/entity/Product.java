@@ -11,11 +11,12 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity // DB 테이블 역할
+@Entity // DB 테이블 역할을 합니다.
 @NoArgsConstructor
 public class Product extends Timestamped {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID 자동 생성 및 증가
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID가 자동으로 생성 및 증가합니다.
     private Long id;
 
     @Column(nullable = false)
@@ -52,4 +53,5 @@ public class Product extends Timestamped {
     public void updateByItemDto(ItemDto itemDto) {
         this.lprice = itemDto.getLprice();
     }
+
 }

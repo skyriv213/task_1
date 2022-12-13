@@ -21,7 +21,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductService  {
+
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -29,23 +30,55 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponseDto createProduct(ProductRequestDto requestDto, HttpServletRequest request) {
+        // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        // 토큰이 있는 경우에만 관심상품 추가 가능
         if (token != null) {
-            User user = findUser(token);
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+
+            // 요청받은 DTO 로 DB에 저장할 객체 만들기
             Product product = productRepository.saveAndFlush(new Product(requestDto, user.getId()));
+
             return new ProductResponseDto(product);
-        }else {
+        } else {
             return null;
         }
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDto> getProducts(HttpServletRequest request) {
+        // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
+
+        // 토큰이 있는 경우에만 관심상품 조회 가능
         if (token != null) {
-            User user = findUser(token);
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+
+            // 사용자 권한 가져와서 ADMIN 이면 전체 조회, USER 면 본인이 추가한 부분 조회
             UserRoleEnum userRoleEnum = user.getRole();
             System.out.println("role = " + userRoleEnum);
 
@@ -53,54 +86,63 @@ public class ProductServiceImpl implements ProductService {
             List<Product> productList;
 
             if (userRoleEnum == UserRoleEnum.USER) {
+                // 사용자 권한이 USER일 경우
                 productList = productRepository.findAllByUserId(user.getId());
             } else {
                 productList = productRepository.findAll();
             }
+
             for (Product product : productList) {
                 list.add(new ProductResponseDto(product));
             }
+
             return list;
+
         } else {
             return null;
         }
     }
-
-    private User findUser(String token) {
-        Claims claims;
-        if (jwtUtil.validateToken(token)) {
-            claims = jwtUtil.getUserInfoFromToken(token);
-        } else {
-            throw new IllegalArgumentException("Token Error");
-        }
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
-        );
-        return user;
-    }
-
-
     @Override
     @Transactional
-    public Long updateProduct(Long id, ProductMypriceRequestDto requestDto,HttpServletRequest request) {
+    public Long updateProduct(Long id, ProductMypriceRequestDto requestDto, HttpServletRequest request) {
+        // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        // 토큰이 있는 경우에만 관심상품 최저가 업데이트 가능
         if (token != null) {
-            User user = findUser(token);
-            Product product = productRepository.findByIdAndUserId(id, user.getId()).orElseThrow(() -> new NullPointerException("해당 상품은 존재하지 않습니다"));
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+
+            Product product = productRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                    () -> new NullPointerException("해당 상품은 존재하지 않습니다.")
+            );
+
             product.update(requestDto);
+
             return product.getId();
-        }
-        else {
+
+        } else {
             return null;
         }
     }
-
     @Override
     @Transactional
-    public void updatedBySearch(Long id, ItemDto itemDto) {
-        Product product = productRepository.findById(id).orElseThrow(() ->
-                new NullPointerException("해당 상품은 존재하지 않습니다"));
+    public void updateBySearch(Long id, ItemDto itemDto){
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 상품은 존재하지 않습니다.")
+        );
         product.updateByItemDto(itemDto);
-
     }
+
 }
