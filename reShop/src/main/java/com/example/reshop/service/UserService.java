@@ -5,10 +5,12 @@ import com.example.reshop.dtos.user.SignupRequestDto;
 import com.example.reshop.entity.user.User;
 import com.example.reshop.entity.user.UserRoleEnum;
 import com.example.reshop.repository.UserRepository;
+import com.example.reshop.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service
@@ -17,6 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
@@ -42,12 +45,16 @@ public class UserService {
     }
 
 
-    public void login(LoginRequestDto loginRequestDto) {
+    @Transactional(readOnly = true)
+    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
+
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다"));
+
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
         }
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
 }
