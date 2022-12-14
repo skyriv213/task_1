@@ -1,6 +1,7 @@
 package com.example.reshop.controller;
 
-import com.example.reshop.service.FolderServiceImpl;
+
+import com.example.reshop.service.FolderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ShopController {
-    private final FolderServiceImpl folderService;
+    private final FolderService folderService;
 
     @GetMapping("/shop")
     public ModelAndView shop() {

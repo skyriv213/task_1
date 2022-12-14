@@ -4,7 +4,7 @@ import com.example.reshop.dtos.ItemDto;
 import com.example.reshop.entity.Product;
 import com.example.reshop.repository.ProductRepository;
 import com.example.reshop.service.NaverApiService;
-import com.example.reshop.service.ProductServiceImpl;
+import com.example.reshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class Sceduler {
 
     private final NaverApiService naverApiService;
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
     private final ProductRepository productRepository;
 
     @Scheduled(cron = "0 0 1 * * *")

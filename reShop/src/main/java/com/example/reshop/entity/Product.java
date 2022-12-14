@@ -61,4 +61,5 @@ public class Product extends Timestamped {
         this.folderList.add(folder);
     }
 
+
 }

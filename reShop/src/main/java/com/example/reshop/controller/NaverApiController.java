@@ -1,7 +1,7 @@
 package com.example.reshop.controller;
 
 import com.example.reshop.dtos.ItemDto;
-import com.example.reshop.service.NaverApiServiceImpl;
+import com.example.reshop.service.NaverApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NaverApiController {
 
-    private final NaverApiServiceImpl naverApiService;
+    private final NaverApiService naverApiService;
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String query) {

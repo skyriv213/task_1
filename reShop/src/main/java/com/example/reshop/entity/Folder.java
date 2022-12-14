@@ -21,6 +21,7 @@ public class Folder {
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
+    // 독립적 설계를 추구, db, back 서로 독립적, 외래키 생성시 코드단에서 에러 발생 가능 ↑, 하나의 케이스
 
     public Folder(String name, User user) {
         this.name = name;
