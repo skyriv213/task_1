@@ -14,13 +14,12 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    @Override
     @Transactional
     public ProductResponseDto createProduct(ProductRequestDto requestDto, HttpServletRequest request) {
         // Request에서 Token 가져오기
@@ -60,13 +58,13 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public Page<Product> getProducts(HttpServletRequest request, int page, int size, String sortBy, boolean isAsc) {
-
+    public Page<Product> getProducts(HttpServletRequest request,
+                                     int page, int size, String sortBy, boolean isAsc) {
+        // 페이징 처리
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-        PageRequest pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
@@ -99,14 +97,14 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 products = productRepository.findAll(pageable);
             }
+
             return products;
-        }else {
+
+        } else {
             return null;
         }
-
     }
 
-    @Override
     @Transactional
     public Long updateProduct(Long id, ProductMypriceRequestDto requestDto, HttpServletRequest request) {
         // Request에서 Token 가져오기
@@ -141,13 +139,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
     @Transactional
-    public void updateBySearch(Long id, ItemDto itemDto) {
+    public void updateBySearch (Long id, ItemDto itemDto){
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("해당 상품은 존재하지 않습니다.")
         );
         product.updateByItemDto(itemDto);
     }
-
 }
