@@ -4,12 +4,13 @@ package com.example.reshop.controller;
 import com.example.reshop.dtos.product.ProductMypriceRequestDto;
 import com.example.reshop.dtos.product.ProductRequestDto;
 import com.example.reshop.dtos.product.ProductResponseDto;
+import com.example.reshop.entity.Product;
 import com.example.reshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,9 +28,15 @@ public class ProductController {
 
     // 관심 상품 조회하기
     @GetMapping("/products")
-    public List<ProductResponseDto> getProducts(HttpServletRequest request) {
+    public Page<Product> getProducts(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            HttpServletRequest request) {
+
         // 응답 보내기
-        return productService.getProducts(request);
+        return productService.getProducts(request,page-1,size,sortBy,isAsc);
     }
 
     // 관심 상품 최저가 등록하기
@@ -38,5 +45,7 @@ public class ProductController {
         // 응답 보내기 (업데이트된 상품 id)
         return productService.updateProduct(id, requestDto, request);
     }
+
+
 
 }

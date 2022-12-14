@@ -12,6 +12,9 @@ import com.example.reshop.repository.UserRepository;
 import com.example.reshop.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService  {
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -56,9 +59,15 @@ public class ProductServiceImpl implements ProductService  {
             return null;
         }
     }
+
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> getProducts(HttpServletRequest request) {
+    public Page<Product> getProducts(HttpServletRequest request, int page, int size, String sortBy, boolean isAsc) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -82,26 +91,21 @@ public class ProductServiceImpl implements ProductService  {
             UserRoleEnum userRoleEnum = user.getRole();
             System.out.println("role = " + userRoleEnum);
 
-            List<ProductResponseDto> list = new ArrayList<>();
-            List<Product> productList;
+            Page<Product> products;
 
             if (userRoleEnum == UserRoleEnum.USER) {
                 // 사용자 권한이 USER일 경우
-                productList = productRepository.findAllByUserId(user.getId());
+                products = productRepository.findAllByUserId(user.getId(), pageable);
             } else {
-                productList = productRepository.findAll();
+                products = productRepository.findAll(pageable);
             }
-
-            for (Product product : productList) {
-                list.add(new ProductResponseDto(product));
-            }
-
-            return list;
-
-        } else {
+            return products;
+        }else {
             return null;
         }
+
     }
+
     @Override
     @Transactional
     public Long updateProduct(Long id, ProductMypriceRequestDto requestDto, HttpServletRequest request) {
@@ -136,9 +140,10 @@ public class ProductServiceImpl implements ProductService  {
             return null;
         }
     }
+
     @Override
     @Transactional
-    public void updateBySearch(Long id, ItemDto itemDto){
+    public void updateBySearch(Long id, ItemDto itemDto) {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("해당 상품은 존재하지 않습니다.")
         );
