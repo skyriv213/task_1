@@ -1,6 +1,3 @@
-package com.example.reshop.controller;
-
-
 import com.example.reshop.dtos.product.ProductMypriceRequestDto;
 import com.example.reshop.dtos.product.ProductRequestDto;
 import com.example.reshop.dtos.product.ProductResponseDto;
@@ -33,10 +30,10 @@ public class ProductController {
             @RequestParam("size") int size,
             @RequestParam("sortBy") String sortBy,
             @RequestParam("isAsc") boolean isAsc,
-            HttpServletRequest request) {
-
+            HttpServletRequest request
+    ) {
         // 응답 보내기
-        return productService.getProducts(request,page-1,size,sortBy,isAsc);
+        return productService.getProducts(request, page-1, size, sortBy, isAsc);
     }
 
     // 관심 상품 최저가 등록하기
@@ -46,6 +43,15 @@ public class ProductController {
         return productService.updateProduct(id, requestDto, request);
     }
 
-
+    // 상품에 폴더 추가
+    @PostMapping("/products/{productId}/folder")
+    public Long addFolder(
+            @PathVariable Long productId,
+            @RequestParam Long folderId,
+            HttpServletRequest request
+    ) {
+        Product product = productService.addFolder(productId, folderId, request);
+        return product.getId();
+    }
 
 }
