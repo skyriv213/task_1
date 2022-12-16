@@ -1,6 +1,7 @@
 package com.example.page.repository;
 
 import com.example.page.entiity.Post;
+import com.example.page.entiity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,8 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     List<Post> findAllByOrderByModifiedAtDesc();
 
-    List<Post> findAllById(Long id);
+    Post findByUserAndId(User user, Long id);
+//    List<Post> findAllById(Long id);
 
-    Post findByIdAndPassword(Long id, String pw);
+
 }

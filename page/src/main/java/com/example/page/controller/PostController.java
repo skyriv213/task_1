@@ -1,44 +1,60 @@
 package com.example.page.controller;
 
-import com.example.page.dtos.PostDtos;
+import com.example.page.dtos.ChangeContext;
+import com.example.page.dtos.PostRequestDto;
 import com.example.page.entiity.Post;
 import com.example.page.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/home")
 public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/api")
+    // 전체 게시글 조회
+    @GetMapping("/post")
     public List<Post> getAllList() {
         return postService.getAllList();
     }
 
-    @PostMapping("/api")
-    public void postingSomething(@RequestBody PostDtos postDtos) {
+    // 게시글 생성
+    @PostMapping("/post")
+    public ResponseEntity postingSomething(@RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
 
-        postService.createPosting(postDtos);
+        return postService.createPosting(postRequestDto, request);
     }
 
-    @GetMapping("/api/{id}")
-    public List<Post> getSomeList(@PathVariable Long id) {
-        return postService.getSomeList(id);
+    // 특정 게시글 조회
+    @GetMapping("/post/{id}")
+    public ResponseEntity getSomeList(@PathVariable Long id, HttpServletRequest request) {
+        return postService.getSomeList(id,request);
     }
 
-    @PatchMapping("/api")
-    public String modifiedText(@RequestParam("id") Long id, @RequestBody PostDtos postDtos, @RequestParam("password") String password) {
-        return postService.modifiedText(id, postDtos, password);
+//    특정 게시글 수정
+    @PatchMapping("/post/{id}")
+    public ResponseEntity modifiedContent(@PathVariable Long id, @RequestBody ChangeContext changeContext, HttpServletRequest request) {
+        return postService.modifiedContent(id,changeContext,request);
     }
 
 
-    @DeleteMapping("/api")
-    public String deletePost(@RequestParam("id") Long id, @RequestParam("password") String password) {
-        return postService.deletePost(id,password);
+    // 특정 개시글 삭제
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity deletePost(@RequestParam("id") Long id, HttpServletRequest request) {
+        return postService.deletePost(id,request);
 
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> getIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

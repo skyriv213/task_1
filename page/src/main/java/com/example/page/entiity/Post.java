@@ -1,8 +1,11 @@
 package com.example.page.entiity;
 
 
-import com.example.page.dtos.PostDtos;
+import com.example.page.dtos.ChangeContext;
+import com.example.page.dtos.PostRequestDto;
+import com.example.page.dtos.PostResponseDto;
 
+import com.example.page.entiity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,28 +17,32 @@ import javax.persistence.*;
 public class Post extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
     private Long id;
 
-    @Column
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private User user;
 
     @Column(nullable = false)
-    private String password;
+    private String title;
 
     @Column(nullable = false)
-    private String text;
+    private String content;
 
 
-    public Post(PostDtos postDtos) {
-        this.name = postDtos.getName();
-        this.password = postDtos.getPassword();
-        this.text = postDtos.getText();
+    public Post(User user,PostRequestDto postRequestDto) {
+        this.user = user;
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
 
     }
 
 
-    public void update(PostDtos postRequestDtos) {
-        this.text = postRequestDtos.getText();
+
+
+    public void update(ChangeContext changeContext)
+    {
+        this.title = changeContext.getTitle();
+        this.content = changeContext.getContent();
     }
 }

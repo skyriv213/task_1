@@ -8,10 +8,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostDtos {
+public class PostResponseDto {
     private User user;
     private String title;
-    private String Context;
+    private String content;
 
+    public PostResponseDto(Post post) {
+        this.user = post.getUser();
+        this.title = post.getTitle();
+        this.content = post.getContent();
 
+    }
 }

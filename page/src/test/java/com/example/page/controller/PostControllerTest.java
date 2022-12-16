@@ -9,7 +9,7 @@ public class PostControllerTest {
 
     @Test
     public void getAllList() {
-        MockMvc
+
     }
 
     @Test
