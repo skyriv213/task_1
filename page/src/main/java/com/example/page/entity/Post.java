@@ -1,20 +1,17 @@
-package com.example.page.entiity;
+package com.example.page.entity;
 
-
-import com.example.page.dtos.ChangeContext;
-import com.example.page.dtos.PostRequestDto;
-import com.example.page.dtos.PostResponseDto;
-
-import com.example.page.entiity.user.User;
-import lombok.*;
-
-import javax.persistence.*;
+import com.example.page.dto.ChangeContext;
+import com.example.page.dto.PostRequestDto;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post extends Timestamped{
+public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,14 +27,12 @@ public class Post extends Timestamped{
     private String content;
 
 
-    public Post(User user,PostRequestDto postRequestDto) {
+    public Post(User user, PostRequestDto postRequestDto) {
         this.user = user;
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
 
     }
-
-
 
 
     public void update(ChangeContext changeContext)

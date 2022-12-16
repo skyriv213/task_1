@@ -1,4 +1,4 @@
-package com.example.page.dtos.user;
+package com.example.page.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

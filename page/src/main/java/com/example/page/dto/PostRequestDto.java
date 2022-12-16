@@ -1,16 +1,14 @@
-package com.example.page.dtos;
+package com.example.page.dto;
 
-
-import com.example.page.entiity.Post;
-import com.example.page.entiity.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class PostRequestDto {
     private String title;
     private String Content;
-
 
 }

@@ -1,17 +1,14 @@
 package com.example.page.controller;
 
-
-import com.example.page.dtos.user.LoginDto;
-import com.example.page.dtos.user.UserRequestDto;
+import com.example.page.dto.LoginDto;
+import com.example.page.dto.UserRequestDto;
 import com.example.page.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor

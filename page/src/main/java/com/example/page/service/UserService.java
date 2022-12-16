@@ -1,15 +1,15 @@
 package com.example.page.service;
 
-import com.example.page.dtos.user.LoginDto;
-import com.example.page.dtos.user.UserRequestDto;
-import com.example.page.entiity.user.User;
+import com.example.page.dto.LoginDto;
+import com.example.page.dto.UserRequestDto;
+import com.example.page.entity.User;
 import com.example.page.repository.UserRepository;
 import com.example.page.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Service

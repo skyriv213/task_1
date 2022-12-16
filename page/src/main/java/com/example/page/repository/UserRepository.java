@@ -1,11 +1,10 @@
 package com.example.page.repository;
 
-import com.example.page.entiity.user.User;
+import com.example.page.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

@@ -1,21 +1,20 @@
 package com.example.page.service;
 
-import com.example.page.dtos.ChangeContext;
-import com.example.page.dtos.PostRequestDto;
-import com.example.page.dtos.PostResponseDto;
-import com.example.page.entiity.Post;
-import com.example.page.entiity.user.User;
+import com.example.page.dto.ChangeContext;
+import com.example.page.dto.PostRequestDto;
+import com.example.page.entity.Post;
+import com.example.page.entity.User;
 import com.example.page.repository.PostRepository;
 import com.example.page.repository.UserRepository;
 import com.example.page.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -38,14 +37,22 @@ public class PostService {
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
+
         if (token != null) {
+
+
             if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
+            // 토큰에서 사용자 정보 가져오기
+
+            claims = jwtUtil.getUserInfoFromToken(token);
+
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+
+
+            String username = claims.getSubject();
+            User user = userRepository.findByUsername(username).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
             );
             // 토큰이 있는 경우에만
@@ -124,4 +131,3 @@ public class PostService {
 
     }
 }
-

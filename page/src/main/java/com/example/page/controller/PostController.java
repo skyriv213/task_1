@@ -1,16 +1,15 @@
 package com.example.page.controller;
 
-import com.example.page.dtos.ChangeContext;
-import com.example.page.dtos.PostRequestDto;
-import com.example.page.entiity.Post;
+import com.example.page.dto.ChangeContext;
+import com.example.page.dto.PostRequestDto;
+import com.example.page.entity.Post;
 import com.example.page.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -39,7 +38,7 @@ public class PostController {
         return postService.getSomeList(id,request);
     }
 
-//    특정 게시글 수정
+    //    특정 게시글 수정
     @PatchMapping("/post/{id}")
     public ResponseEntity modifiedContent(@PathVariable Long id, @RequestBody ChangeContext changeContext, HttpServletRequest request) {
         return postService.modifiedContent(id,changeContext,request);
@@ -47,7 +46,7 @@ public class PostController {
 
 
     // 특정 개시글 삭제
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/post")
     public ResponseEntity deletePost(@RequestParam("id") Long id, HttpServletRequest request) {
         return postService.deletePost(id,request);
 
