@@ -1,7 +1,7 @@
 package com.example.page.controller;
 
-import com.example.page.dto.LoginDto;
-import com.example.page.dto.UserRequestDto;
+import com.example.page.dto.user.LoginDto;
+import com.example.page.dto.user.UserRequestDto;
 import com.example.page.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

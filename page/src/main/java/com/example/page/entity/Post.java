@@ -1,7 +1,8 @@
 package com.example.page.entity;
 
-import com.example.page.dto.ChangeContext;
-import com.example.page.dto.PostRequestDto;
+import com.example.page.dto.post.ChangeContext;
+import com.example.page.dto.post.PostRequestDto;
+import com.example.page.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
-package com.example.page.dto;
+package com.example.page.dto.post;
 
 import com.example.page.entity.Post;
-import com.example.page.entity.User;
+import com.example.page.entity.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

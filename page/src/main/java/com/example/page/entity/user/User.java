@@ -1,5 +1,6 @@
-package com.example.page.entity;
+package com.example.page.entity.user;
 
+import com.example.page.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,8 @@ public class User {
 
     @OneToMany
     List<Post> posts = new ArrayList<>();
+
+
 
     public User(String name, String password) {
         this.username = name;

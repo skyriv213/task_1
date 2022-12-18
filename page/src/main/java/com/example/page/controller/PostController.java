@@ -1,7 +1,7 @@
 package com.example.page.controller;
 
-import com.example.page.dto.ChangeContext;
-import com.example.page.dto.PostRequestDto;
+import com.example.page.dto.post.ChangeContext;
+import com.example.page.dto.post.PostRequestDto;
 import com.example.page.entity.Post;
 import com.example.page.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;

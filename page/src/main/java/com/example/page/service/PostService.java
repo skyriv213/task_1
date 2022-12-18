@@ -1,9 +1,9 @@
 package com.example.page.service;
 
-import com.example.page.dto.ChangeContext;
-import com.example.page.dto.PostRequestDto;
+import com.example.page.dto.post.ChangeContext;
+import com.example.page.dto.post.PostRequestDto;
 import com.example.page.entity.Post;
-import com.example.page.entity.User;
+import com.example.page.entity.user.User;
 import com.example.page.repository.PostRepository;
 import com.example.page.repository.UserRepository;
 import com.example.page.util.JwtUtil;

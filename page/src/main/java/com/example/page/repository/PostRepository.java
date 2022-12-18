@@ -1,7 +1,7 @@
 package com.example.page.repository;
 
 import com.example.page.entity.Post;
-import com.example.page.entity.User;
+import com.example.page.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

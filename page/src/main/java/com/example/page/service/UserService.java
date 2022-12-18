@@ -1,8 +1,8 @@
 package com.example.page.service;
 
-import com.example.page.dto.LoginDto;
-import com.example.page.dto.UserRequestDto;
-import com.example.page.entity.User;
+import com.example.page.dto.user.LoginDto;
+import com.example.page.dto.user.UserRequestDto;
+import com.example.page.entity.user.User;
 import com.example.page.repository.UserRepository;
 import com.example.page.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
