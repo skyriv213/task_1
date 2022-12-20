@@ -2,6 +2,7 @@ package com.example.page.service;
 
 import com.example.page.dto.post.ChangeContext;
 import com.example.page.dto.post.PostRequestDto;
+import com.example.page.dto.post.PostResponseDto;
 import com.example.page.entity.Post;
 import com.example.page.entity.user.User;
 import com.example.page.repository.PostRepository;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.CredentialException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,44 +30,96 @@ public class PostService {
 
     // 전체 게시글 조회
     @Transactional()
-    public List<Post> getAllList() {
-        return postRepository.findAllByOrderByModifiedAtDesc();
+    public List<PostResponseDto> getAllPost() {
+        List<Post> allList = postRepository.findAllByOrderByModifiedAtDesc();
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : allList) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+        return postResponseDtos;
     }
+
 
     //게시글 생성
     @Transactional
-    public ResponseEntity createPosting(PostRequestDto postRequestDtos, HttpServletRequest request) {
+    public String createPosting(PostRequestDto postRequestDtos, HttpServletRequest request) {
         // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+        Claims claims = createClaim(jwtUtil.resolveToken(request));
 
-        if (token != null) {
-
-
-            if (jwtUtil.validateToken(token)) {
-            // 토큰에서 사용자 정보 가져오기
-
-            claims = jwtUtil.getUserInfoFromToken(token);
-
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-
-            String username = claims.getSubject();
-            User user = userRepository.findByUsername(username).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
-            );
-            // 토큰이 있는 경우에만
-            Post post = new Post(user, postRequestDtos);
-            postRepository.save(post);
-
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        }
-        return new ResponseEntity<>("잘못된 유저의 접근입니다", HttpStatus.BAD_REQUEST);
+        String username = claims.getSubject();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
+        );
+        // 토큰이 있는 경우에만
+        Post post = new Post(user, postRequestDtos);
+        postRepository.save(post);
+        PostResponseDto postResponseDto = new PostResponseDto(post);
+        return postResponseDto.getUserResponseDto().getUsername();
     }
 
 
+
+    // 특정 게시글 조회
+    @Transactional
+    public PostResponseDto getSomeList(Long id, HttpServletRequest request) {
+        /**
+         * return responseEntity -> dto
+         * dto 내부에 post 필드, Comment - list타입
+         * return 으로 dto 반환
+         * 한번에 response로 내려주면 대용량으로 메모리 잡아먹게 됨
+         * 원하는 필드만 response로 내려주기 -> dto 객체 활용
+         * entity -> dto로 변환 후 반환하기 ★★★★★
+         * ★★★ 키워드 : contentLocation ★★★
+         */
+
+        String token = jwtUtil.resolveToken(request);
+        Claims claims = createClaim(token);
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
+        );
+        Post post = postRepository.findByUserAndId(user, id);
+        PostResponseDto postResponseDto = new PostResponseDto(post);
+        return postResponseDto;
+
+    }
+
+    // 특정 게시글 수정 미완
+
+    @Transactional
+    public String modifiedContent(Long id, ChangeContext changeContext, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims = createClaim(token);
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
+        );
+        Post post = postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("등록되지않은 아이디입니다"));
+        if (post.getUser().equals(user)) {
+            post.update(changeContext);
+            return post.getUser().getUsername()+"의 "+ id +"번째 글이 수정되었습니다";
+        } else {
+            throw new IllegalArgumentException("잘못된 접근입니다");
+        }
+    }
+    // 특정 게시글 삭제
+
+    @Transactional
+    public String deletePost(Long id, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims = createClaim(token);
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
+        );
+        Post post = postRepository.findByUserAndId(user, id);
+        if (post.getUser().equals(user)) {
+            postRepository.delete(post);
+
+            return user.getUsername() + "의 글이 성공적으로 지워졌습니다";
+        } else {
+            throw new IllegalArgumentException("잘못된 유저의 입력입니다");
+        }
+
+    }
     private Claims createClaim(String token) {
         Claims claims;
 
@@ -80,54 +135,5 @@ public class PostService {
         } else {
             throw new NullPointerException("Token Error");
         }
-    }
-
-
-    // 특정 게시글 조회
-    @Transactional
-    public ResponseEntity getSomeList(Long id, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
-        return new ResponseEntity<>(postRepository.findByUserAndId(user, id), HttpStatus.OK);
-    }
-
-
-    // 특정 게시글 수정 미완
-    @Transactional
-    public ResponseEntity modifiedContent(Long id, ChangeContext changeContext, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
-        Post post = postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("등록되지않은 아이디입니다"));
-        if (post.getUser().equals(user)) {
-            post.update(changeContext);
-            return new ResponseEntity<>(user.getUsername() + "의 글이 업데이트 완료", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("잘못된 유저의 접근입니다", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // 특정 게시글 삭제
-    @Transactional
-    public ResponseEntity deletePost(Long id, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
-        Post post = postRepository.findByUserAndId(user, id);
-        if (post.getUser().equals(user)) {
-            postRepository.delete(post);
-            return new ResponseEntity(user.getUsername() + "의 글이 성공적으로 지워졌습니다", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("잘못된 유저의 접근입니다", HttpStatus.BAD_REQUEST);
-        }
-
     }
 }

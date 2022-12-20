@@ -1,5 +1,6 @@
 package com.example.page.entity.user;
 
+import com.example.page.entity.Comment;
 import com.example.page.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,7 +28,8 @@ public class User {
     @OneToMany
     List<Post> posts = new ArrayList<>();
 
-
+    @OneToMany
+    List<Comment> comments = new ArrayList<>();
 
     public User(String name, String password) {
         this.username = name;

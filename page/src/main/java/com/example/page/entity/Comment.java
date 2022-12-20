@@ -1,22 +1,29 @@
 package com.example.page.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.page.entity.user.User;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
-@Builder
+@Setter
+@NoArgsConstructor
 public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long post_id;
+    @ManyToOne
+    @JoinColumn(name = "POST_ID",nullable = false)
+    private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID",nullable = false)
+    private User user;
 
     private String comment;
 }
