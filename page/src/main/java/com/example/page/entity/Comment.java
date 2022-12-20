@@ -1,5 +1,6 @@
 package com.example.page.entity;
 
+import com.example.page.dto.comment.CommentRequestDto;
 import com.example.page.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -26,4 +27,15 @@ public class Comment extends Timestamped {
     private User user;
 
     private String comment;
+
+    public Comment(User user, Post post, String comment) {
+        this.post = post;
+        this.user = user;
+        this.comment = comment;
+    }
+
+    public void update(CommentRequestDto commentRequestDto) {
+        this.comment = commentRequestDto.getComment();
+    }
+
 }

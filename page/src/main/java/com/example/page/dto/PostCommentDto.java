@@ -1,19 +1,24 @@
 package com.example.page.dto;
 
-import com.example.page.entity.Comment;
-import lombok.Builder;
+import com.example.page.dto.comment.CommentResponseDto;
+import com.example.page.dto.post.PostResponseDto;
 import lombok.Getter;
-import org.springframework.web.service.annotation.GetExchange;
+import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
-@Builder
+@NoArgsConstructor
 public class PostCommentDto {
 
-    private String postname;
+    private String postTitle;
     private String postConetnets;
-    private List<Comment> commentList;
+    private List<CommentResponseDto> commentList;
 
-    public 
+    public PostCommentDto(PostResponseDto postResponseDto, List<CommentResponseDto> commentResponseDtos) {
+        this.postTitle = postResponseDto.getTitle();
+        this.postConetnets = postResponseDto.getContent();
+        this.commentList = Collections.unmodifiableList(commentResponseDtos);
+    }
 }

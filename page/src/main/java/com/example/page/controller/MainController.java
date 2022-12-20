@@ -1,5 +1,7 @@
 package com.example.page.controller;
 
+import com.example.page.dto.PostCommentDto;
+import com.example.page.dto.comment.CommentResponseDto;
 import com.example.page.dto.post.ChangeContext;
 import com.example.page.dto.post.PostRequestDto;
 import com.example.page.dto.post.PostResponseDto;
@@ -44,7 +46,9 @@ public class MainController {
     @GetMapping("/post/{id}")
     public ResponseEntity getSpecific(@PathVariable Long id, HttpServletRequest request) {
         PostResponseDto somePost = postService.getSomeList(id, request);
-        return new ResponseEntity<PostResponseDto>(somePost, HttpStatus.valueOf(200));
+        List<CommentResponseDto> commentResponseDto =  commentService.getSomeComment(id);
+        PostCommentDto postCommentDto = new PostCommentDto(somePost, commentResponseDto);
+        return new ResponseEntity<PostCommentDto>(postCommentDto, HttpStatus.valueOf(200));
 
     }
 
@@ -63,6 +67,7 @@ public class MainController {
         return new ResponseEntity(userNameMassage, HttpStatus.valueOf(200));
 
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> getIllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
