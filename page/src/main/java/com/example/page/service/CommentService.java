@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +83,10 @@ public class CommentService {
         return comment.getUser().getUsername() + "의 댓글이 수정되었습니다. " +"수정시간 : " +comment.getModifiedAt();
     }
 
-
+    @Transactional
     public List<CommentResponseDto> getSomeComment(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("등록되지않은 post입니다"));
-        List<Comment> allByComment = commentRepository.findAllByPost(post);
+        List<Comment> allByComment = post.getComments();
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
         for (Comment comment : allByComment) {
             commentResponseDtos.add(new CommentResponseDto());

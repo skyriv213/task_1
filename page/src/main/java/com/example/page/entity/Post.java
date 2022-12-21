@@ -24,6 +24,10 @@ public class Post extends Timestamped {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    /**
+     * 단방향 조회
+     * sql, ddl 직접작성,auto crate 해제
+     */
     @OneToMany
     List<Comment> comments = new ArrayList<>();
 
