@@ -3,6 +3,8 @@ package com.example.page.entity;
 import com.example.page.dto.post.ChangeContext;
 import com.example.page.dto.post.PostRequestDto;
 import com.example.page.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,14 +23,16 @@ public class Post extends Timestamped {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @JsonBackReference
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     /**
      * 단방향 조회
      * sql, ddl 직접작성,auto crate 해제
      */
-    @OneToMany
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)

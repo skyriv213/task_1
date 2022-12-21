@@ -20,16 +20,16 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public void signup(UserRequestDto requestDto) {
+    public String signup(UserRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
-        Optional<User> found = userRepository.findByUsername(username);
-        if (found.isPresent()) {
+        if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다");
         }
         User user = new User(username, password);
         userRepository.save(user);
+        return username + "저장완료";
     }
 
     @Transactional(readOnly = true)

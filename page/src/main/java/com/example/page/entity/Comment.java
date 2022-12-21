@@ -2,6 +2,7 @@ package com.example.page.entity;
 
 import com.example.page.dto.comment.CommentRequestDto;
 import com.example.page.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,11 +20,13 @@ public class Comment extends Timestamped {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID",nullable = false)
+    @JsonBackReference
+    @JoinColumn(name = "postId",nullable = false)
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID",nullable = false)
+    @JsonBackReference
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 
     private String comment;

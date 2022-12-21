@@ -29,7 +29,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-
+    @Transactional
     public String createCommnet(Long postId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 postID는 없는 ID 입니다"));
         String token = jwtUtil.resolveToken(request);
@@ -61,7 +61,7 @@ public class CommentService {
             throw new NullPointerException("Token Error");
         }
     }
-
+    @Transactional
     public String deleteComment(Long postId, HttpServletRequest request) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 postID는 없는 ID 입니다"));
         String token = jwtUtil.resolveToken(request);
@@ -72,7 +72,7 @@ public class CommentService {
         return user.getUsername() + "의 댓글이 지워졌습니다";
     }
 
-
+    @Transactional
     public String updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 postID는 없는 ID 입니다"));
         String token = jwtUtil.resolveToken(request);
@@ -83,13 +83,13 @@ public class CommentService {
         return comment.getUser().getUsername() + "의 댓글이 수정되었습니다. " +"수정시간 : " +comment.getModifiedAt();
     }
 
-    @Transactional
+
     public List<CommentResponseDto> getSomeComment(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("등록되지않은 post입니다"));
         List<Comment> allByComment = post.getComments();
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
         for (Comment comment : allByComment) {
-            commentResponseDtos.add(new CommentResponseDto());
+            commentResponseDtos.add(new CommentResponseDto(comment));
         }
         return commentResponseDtos;
     }
