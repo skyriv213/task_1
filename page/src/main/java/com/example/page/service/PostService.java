@@ -1,8 +1,8 @@
 package com.example.page.service;
 
 import com.example.page.dto.post.ChangeContext;
-import com.example.page.dto.post.PostRequestDto;
-import com.example.page.dto.post.PostResponseDto;
+import com.example.page.dto.post.PostRequest;
+import com.example.page.dto.post.PostResponse;
 import com.example.page.entity.Post;
 import com.example.page.entity.user.User;
 import com.example.page.repository.PostRepository;
@@ -11,12 +11,9 @@ import com.example.page.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.CredentialException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,19 +27,19 @@ public class PostService {
 
     // 전체 게시글 조회
     @Transactional()
-    public List<PostResponseDto> getAllPost() {
+    public List<PostResponse> getAllPost() {
         List<Post> allList = postRepository.findAllByOrderByModifiedAtDesc();
-        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        List<PostResponse> postResponses = new ArrayList<>();
         for (Post post : allList) {
-            postResponseDtos.add(new PostResponseDto(post));
+            postResponses.add(new PostResponse(post));
         }
-        return postResponseDtos;
+        return postResponses;
     }
 
 
     //게시글 생성
     @Transactional
-    public String createPosting(PostRequestDto postRequestDtos, HttpServletRequest request) {
+    public String createPosting(PostRequest postRequestDtos, HttpServletRequest request) {
         // Request에서 Token 가져오기
         Claims claims = createClaim(jwtUtil.resolveToken(request));
 
@@ -53,15 +50,15 @@ public class PostService {
         // 토큰이 있는 경우에만
         Post post = new Post(user, postRequestDtos);
         postRepository.save(post);
-        PostResponseDto postResponseDto = new PostResponseDto(post);
-        return postResponseDto.getUserResponseDto().getUsername();
+        PostResponse postResponse = new PostResponse(post);
+        return postResponse.getUserResponseDto().getUsername();
     }
 
 
 
     // 특정 게시글 조회
     @Transactional
-    public PostResponseDto getSomeList(Long id, HttpServletRequest request) {
+    public PostResponse getSomeList(Long id, HttpServletRequest request) {
         /**
          * return responseEntity -> dto
          * dto 내부에 post 필드, Comment - list타입
@@ -78,8 +75,8 @@ public class PostService {
                 () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
         );
         Post post = postRepository.findByUserAndId(user, id);
-        PostResponseDto postResponseDto = new PostResponseDto(post);
-        return postResponseDto;
+        PostResponse postResponse = new PostResponse(post);
+        return postResponse;
 
     }
 

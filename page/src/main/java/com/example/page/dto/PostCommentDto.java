@@ -1,7 +1,7 @@
 package com.example.page.dto;
 
 import com.example.page.dto.comment.CommentResponseDto;
-import com.example.page.dto.post.PostResponseDto;
+import com.example.page.dto.post.PostResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,9 +16,9 @@ public class PostCommentDto {
     private String postConetnets;
     private List<CommentResponseDto> commentList;
 
-    public PostCommentDto(PostResponseDto postResponseDto, List<CommentResponseDto> commentResponseDtos) {
-        this.postTitle = postResponseDto.getTitle();
-        this.postConetnets = postResponseDto.getContent();
+    public PostCommentDto(PostResponse postResponse, List<CommentResponseDto> commentResponseDtos) {
+        this.postTitle = postResponse.getTitle();
+        this.postConetnets = postResponse.getContent();
         this.commentList = Collections.unmodifiableList(commentResponseDtos);
     }
 }

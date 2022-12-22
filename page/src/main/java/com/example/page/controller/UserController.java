@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping("/users0")
     public ResponseEntity signup(@RequestBody @Valid UserRequestDto requestDto) {
         String signup = userService.signup(requestDto);
         return new ResponseEntity<String>(signup, HttpStatus.valueOf(200));
     }
 
     @ResponseBody
-    @PostMapping("/login")
+    @PostMapping("/users-login")
     public void login(@RequestBody LoginDto requestDto, HttpServletResponse response) {
         userService.login(requestDto, response);
     }

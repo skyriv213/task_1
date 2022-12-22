@@ -1,7 +1,7 @@
 package com.example.page.entity;
 
 import com.example.page.dto.post.ChangeContext;
-import com.example.page.dto.post.PostRequestDto;
+import com.example.page.dto.post.PostRequest;
 import com.example.page.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -42,10 +42,10 @@ public class Post extends Timestamped {
     private String content;
 
 
-    public Post(User user, PostRequestDto postRequestDto) {
+    public Post(User user, PostRequest postRequest) {
         this.user = user;
-        this.title = postRequestDto.getTitle();
-        this.content = postRequestDto.getContent();
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
 
     }
 
