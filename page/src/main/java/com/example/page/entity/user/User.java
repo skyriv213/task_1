@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table
+@Table(name = "users")
 @NoArgsConstructor
 public class User {
     @Id
@@ -27,6 +27,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private Grade grade;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Post> posts = new ArrayList<>();
@@ -35,8 +39,9 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Comment> comments = new ArrayList<>();
 
-    public User(String name, String password) {
+    public User(String name, String password, Grade grade) {
         this.username = name;
         this.password = password;
+        this.grade = grade;
     }
 }

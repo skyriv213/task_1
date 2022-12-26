@@ -2,6 +2,7 @@ package com.example.page.service;
 
 import com.example.page.dto.user.LoginDto;
 import com.example.page.dto.user.UserRequestDto;
+import com.example.page.entity.user.Grade;
 import com.example.page.entity.user.User;
 import com.example.page.repository.UserRepository;
 import com.example.page.util.JwtUtil;
@@ -19,15 +20,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+    private static final String ADMIN_TOKEN = "AAA";
+
+
     @Transactional
     public String signup(UserRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
+
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다");
         }
-        User user = new User(username, password);
+        Grade grade = Grade.USER;
+        if(requestDto.isAdmin()){
+            if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다");
+            }
+            grade = Grade.ADMIN;
+        }
+        User user = new User(username, password, grade);
         userRepository.save(user);
         return username + "저장완료";
     }
@@ -42,7 +54,7 @@ public class UserService {
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지않습니다");
         }
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER,jwtUtil.createToken(user.getUsername()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getGrade()));
     }
 
 }

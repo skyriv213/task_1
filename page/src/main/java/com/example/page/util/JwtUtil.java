@@ -1,5 +1,6 @@
 package com.example.page.util;
 
+import com.example.page.entity.user.Grade;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -47,11 +48,11 @@ public class JwtUtil {
     }
 
     // 토큰 생성, Build패턴 이용
-    public String createToken(String username) {
+    public String createToken(String username, Grade grade) {
         Date date = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .claim(username, username) // 응애!
+                        .claim(AUTHORIZATION_KEY,grade) // 응애!
                         .setSubject(username)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)

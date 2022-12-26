@@ -1,5 +1,6 @@
 package com.example.page.dto.user;
 
+import com.example.page.entity.user.Grade;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -16,4 +17,10 @@ public class UserRequestDto {
     @Pattern(regexp =  "^[0-9a-zA-Z]*$", message = "비밀번호 형식에 맞지않습니다. 비밀번호는 8 ~ 15자리 영문(대,소문자),숫자로 이루어져야합니다")
     @Size(min = 8,max = 15)
     private String password;
+
+    private boolean admin = false;
+
+    private String adminToken;
+
+
 }

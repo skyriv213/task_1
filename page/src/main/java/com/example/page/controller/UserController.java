@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PostMapping("/users-login")
+    @PostMapping("/logins")
     public void login(@RequestBody LoginDto requestDto, HttpServletResponse response) {
         userService.login(requestDto, response);
     }
