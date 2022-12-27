@@ -5,6 +5,8 @@ import com.example.page.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Getter
 @NoArgsConstructor
 public class PostResponse {

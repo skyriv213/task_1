@@ -4,6 +4,7 @@ import com.example.page.dto.post.ChangeContext;
 import com.example.page.dto.post.PostRequest;
 import com.example.page.dto.post.PostResponse;
 import com.example.page.entity.Post;
+import com.example.page.entity.user.Grade;
 import com.example.page.entity.user.User;
 import com.example.page.repository.PostRepository;
 import com.example.page.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,6 @@ public class PostService {
     }
 
 
-
     // 특정 게시글 조회
     @Transactional
     public PostResponse getSomeList(Long id, HttpServletRequest request) {
@@ -74,10 +75,22 @@ public class PostService {
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                 () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
         );
-        Post post = postRepository.findByUserAndId(user, id);
-        PostResponse postResponse = new PostResponse(post);
-        return postResponse;
+        if (user.getGrade().equals(Grade.ADMIN)) {
+            Post post = postRepository.findById(id).orElseThrow(()->  new IllegalArgumentException("잘못된 아이디 입니다"));
+            PostResponse postResponse = new PostResponse(post);
+            return postResponse;
+        } else {
+            boolean check = userRepository.existsByUsername(user.getUsername());
+            if(check) {
+                Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 글은 존재하지않습니다"));
+                PostResponse postResponse = new PostResponse(post);
+                return postResponse;
+            }
+            else{
+                throw new IllegalArgumentException("해당 유저는 이 글을 조회할 권한이 없습니다");
+            }
 
+        }
     }
 
     // 특정 게시글 수정 미완
@@ -93,7 +106,7 @@ public class PostService {
                 new IllegalArgumentException("등록되지않은 아이디입니다"));
         if (post.getUser().equals(user)) {
             post.update(changeContext);
-            return post.getUser().getUsername()+"의 "+ id +"번째 글이 수정되었습니다";
+            return post.getUser().getUsername() + "의 " + id + "번째 글이 수정되었습니다";
         } else {
             throw new IllegalArgumentException("잘못된 접근입니다");
         }
@@ -107,6 +120,7 @@ public class PostService {
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                 () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
         );
+
         Post post = postRepository.findByUserAndId(user, id);
         if (post.getUser().equals(user)) {
             postRepository.delete(post);
@@ -117,6 +131,7 @@ public class PostService {
         }
 
     }
+
     private Claims createClaim(String token) {
         Claims claims;
 
