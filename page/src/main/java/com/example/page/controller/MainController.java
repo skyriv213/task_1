@@ -24,6 +24,7 @@ public class MainController {
 
     private final PostService postService;
     private final CommentService commentService;
+
     // 전체 게시글 조회
     @GetMapping("/posts")
     public ResponseEntity getAllPost() {
@@ -36,7 +37,7 @@ public class MainController {
 
     // 게시글 생성
     @PostMapping("/posts")
-    public ResponseEntity  createPosting(@RequestBody PostRequest postRequest, HttpServletRequest request) {
+    public ResponseEntity createPosting(@RequestBody PostRequest postRequest, HttpServletRequest request) {
         String id = postService.createPosting(postRequest, request);
         HttpHeaders headers = new HttpHeaders();
         headers.set(id, String.valueOf(HttpStatus.valueOf(200)));
@@ -47,7 +48,7 @@ public class MainController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity getSpecific(@PathVariable Long postId, HttpServletRequest request) {
         PostResponse somePost = postService.getSomeList(postId, request);
-        List<CommentResponseDto> commentResponseDto =  commentService.getSomeComment(postId);
+        List<CommentResponseDto> commentResponseDto = commentService.getSomeComment(postId);
         PostCommentDto postCommentDto = new PostCommentDto(somePost, commentResponseDto);
         return new ResponseEntity<PostCommentDto>(postCommentDto, HttpStatus.valueOf(200));
 
@@ -69,9 +70,5 @@ public class MainController {
 
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> getIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 
 }

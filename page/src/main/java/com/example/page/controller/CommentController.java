@@ -29,11 +29,8 @@ public class CommentController {
 
     @PutMapping("/{postId}/{commentId}")
     public ResponseEntity updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
-       String message = commentService.updateComment(postId, commentId, commentRequestDto, request);
+        String message = commentService.updateComment(postId, commentId, commentRequestDto, request);
         return new ResponseEntity(message, HttpStatus.valueOf(200));
     }
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> getIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+
 }
