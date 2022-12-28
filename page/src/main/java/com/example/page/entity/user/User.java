@@ -31,11 +31,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Grade grade;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Post> posts = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Comment> comments = new ArrayList<>();
 

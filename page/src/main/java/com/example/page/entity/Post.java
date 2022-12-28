@@ -23,7 +23,6 @@ public class Post extends Timestamped {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -31,7 +30,6 @@ public class Post extends Timestamped {
      * 단방향 조회
      * sql, ddl 직접작성,auto crate 해제
      */
-    @JsonManagedReference
     @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Comment> comments = new ArrayList<>();
 

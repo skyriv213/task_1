@@ -20,12 +20,10 @@ public class Comment extends Timestamped {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "postId",nullable = false)
     private Post post;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
