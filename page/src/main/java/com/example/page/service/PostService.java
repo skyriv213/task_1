@@ -46,9 +46,7 @@ public class PostService {
         Claims claims = createClaim(jwtUtil.resolveToken(request));
 
         String username = claims.getSubject();
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
-        );
+        User user = findUser(username);
         // 토큰이 있는 경우에만
         Post post = new Post(user, postRequestDtos);
         postRepository.save(post);
@@ -72,9 +70,7 @@ public class PostService {
 
         String token = jwtUtil.resolveToken(request);
         Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
+        User user = findUser(claims.getSubject());
         if (user.getGrade().equals(Grade.ADMIN)) {
             Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("잘못된 아이디 입니다"));
             PostResponse postResponse = new PostResponse(post);
@@ -98,23 +94,20 @@ public class PostService {
     public String modifiedContent(Long id, ChangeContext changeContext, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
+        User user = findUser(claims.getSubject());
 
+
+        Post post = postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("등록되지않은 아이디입니다"));
         if (user.getGrade().equals(Grade.ADMIN)) {
-            Post post = postRepository.findById(id).orElseThrow(() ->
-                    new IllegalArgumentException("등록되지않은 아이디입니다"));
             post.update(changeContext);
             return post.getUser().getUsername() + "의 " + id + "번째 글이 수정되었습니다";
         } else {
-            Post post = postRepository.findById(id).orElseThrow(() ->
-                    new IllegalArgumentException("등록되지않은 아이디입니다"));
             if (post.getUser().equals(user)) {
                 post.update(changeContext);
                 return post.getUser().getUsername() + "의 " + id + "번째 글이 수정되었습니다";
             } else {
-                throw new IllegalArgumentException("잘못된 접근입니다")
+                throw new IllegalArgumentException("잘못된 접근입니다");
             }
 
         }
@@ -125,16 +118,13 @@ public class PostService {
     public String deletePost(Long id, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims = createClaim(token);
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
-        );
+        User user = findUser(claims.getSubject());
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 글은 존재하지않습니다"));
         if (user.getGrade().equals(Grade.ADMIN)) {
-            Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 글은 존재하지않습니다"));
             postRepository.delete(post);
             return user.getUsername() + "의 글이 성공적으로 지워졌습니다";
-        }
-        else {
-            Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 글은 존재하지않습니다"));
+        } else {
             if (post.getUser().equals(user)) {
                 postRepository.delete(post);
                 return user.getUsername() + "의 글이 성공적으로 지워졌습니다";
@@ -160,5 +150,11 @@ public class PostService {
         } else {
             throw new NullPointerException("Token Error");
         }
+    }
+
+    private User findUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("없는 형식의 아이디 입니다")
+        );
     }
 }
