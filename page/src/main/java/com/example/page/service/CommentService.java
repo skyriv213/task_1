@@ -12,6 +12,7 @@ import com.example.page.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,7 @@ public class CommentService {
         String token = jwtUtil.resolveToken(request);
         Claims claim = createClaim(token);
         User user = userRepository.findByUsername(claim.getSubject()).orElseThrow(() -> new IllegalArgumentException("등록되지않은 유저입니다"));
+
         Comment comment = commentRepository.findByUserAndPost(user, post);
         comment.update(commentRequestDto);
         return comment.getUser().getUsername() + "의 댓글이 수정되었습니다. " +"수정시간 : " +comment.getModifiedAt();

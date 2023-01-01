@@ -1,6 +1,7 @@
 package com.example.page.util;
 
 import com.example.page.entity.user.Grade;
+import com.example.page.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -8,6 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +23,8 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
+
+    private final UserDetailsServiceImpl userDetailsService;
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // 사용자 권한 값의 KEY
@@ -47,12 +53,19 @@ public class JwtUtil {
         return null;
     }
 
+    //인증객체 생성
+    public Authentication createAuthentication(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+    }
+
     // 토큰 생성, Build패턴 이용
     public String createToken(String username, Grade grade) {
         Date date = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .claim(AUTHORIZATION_KEY,grade) // 응애!
+                        .claim(AUTHORIZATION_KEY, grade) // 응애!
                         .setSubject(username)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
@@ -80,6 +93,11 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 }
+
+//    public Authentication createAuthentication(String username) {
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//        return new UsernamePasswordAuthentica
+//
+//
+//    }
