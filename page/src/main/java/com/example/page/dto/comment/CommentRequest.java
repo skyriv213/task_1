@@ -3,7 +3,7 @@ package com.example.page.dto.comment;
 import lombok.Getter;
 
 @Getter
-public class CommentRequestDto {
+public class CommentRequest {
 
     private String comment;
 }

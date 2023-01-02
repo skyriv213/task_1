@@ -1,7 +1,7 @@
 package com.example.page.service;
 
-import com.example.page.dto.comment.CommentRequestDto;
-import com.example.page.dto.comment.CommentResponseDto;
+import com.example.page.dto.comment.CommentRequest;
+import com.example.page.dto.comment.CommentResponse;
 import com.example.page.entity.Comment;
 import com.example.page.entity.Post;
 import com.example.page.entity.user.User;
@@ -12,14 +12,11 @@ import com.example.page.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +28,13 @@ public class CommentService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public String createCommnet(Long postId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public String createCommnet(Long postId, CommentRequest commentRequest, HttpServletRequest request) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 postID는 없는 ID 입니다"));
         String token = jwtUtil.resolveToken(request);
         Claims claim = createClaim(token);
         String username = claim.getSubject();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없는 유저입니다"));
-        Comment comment = new Comment(user, post, commentRequestDto.getComment());
+        Comment comment = new Comment(user, post, commentRequest.getComment());
         commentRepository.save(comment);
         return user.getUsername() + "의 댓글이 저장되었습니다";
     }
@@ -74,25 +71,25 @@ public class CommentService {
     }
 
     @Transactional
-    public String updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public String updateComment(Long postId, Long commentId, CommentRequest commentRequest, HttpServletRequest request) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 postID는 없는 ID 입니다"));
         String token = jwtUtil.resolveToken(request);
         Claims claim = createClaim(token);
         User user = userRepository.findByUsername(claim.getSubject()).orElseThrow(() -> new IllegalArgumentException("등록되지않은 유저입니다"));
 
         Comment comment = commentRepository.findByUserAndPost(user, post);
-        comment.update(commentRequestDto);
+        comment.update(commentRequest);
         return comment.getUser().getUsername() + "의 댓글이 수정되었습니다. " +"수정시간 : " +comment.getModifiedAt();
     }
 
 
-    public List<CommentResponseDto> getSomeComment(Long id) {
+    public List<CommentResponse> getSomeComment(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("등록되지않은 post입니다"));
         List<Comment> allByComment = post.getComments();
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        List<CommentResponse> commentResponses = new ArrayList<>();
         for (Comment comment : allByComment) {
-            commentResponseDtos.add(new CommentResponseDto(comment));
+            commentResponses.add(new CommentResponse(comment));
         }
-        return commentResponseDtos;
+        return commentResponses;
     }
 }

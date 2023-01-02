@@ -31,9 +31,6 @@ public class UserService {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        // db 쿼리 성능 차이
-        // 중복의 경우 exist 사용이 좋다
-        //
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다");
         }

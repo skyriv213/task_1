@@ -30,7 +30,7 @@ public class Post extends Timestamped {
      * 단방향 조회
      * sql, ddl 직접작성,auto crate 해제
      */
-    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE, orphanRemoval = true) // 부모 객체가 삭제되면 연관된 자식 테이블도 삭제
     List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)

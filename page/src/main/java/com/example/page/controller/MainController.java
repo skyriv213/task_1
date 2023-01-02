@@ -1,14 +1,13 @@
 package com.example.page.controller;
 
 import com.example.page.dto.PostCommentDto;
-import com.example.page.dto.comment.CommentResponseDto;
+import com.example.page.dto.comment.CommentResponse;
 import com.example.page.dto.post.ChangeContext;
 import com.example.page.dto.post.PostRequest;
 import com.example.page.dto.post.PostResponse;
 import com.example.page.service.CommentService;
 import com.example.page.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,8 +47,8 @@ public class MainController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity getSpecific(@PathVariable Long postId, HttpServletRequest request) {
         PostResponse somePost = postService.getSomeList(postId, request);
-        List<CommentResponseDto> commentResponseDto = commentService.getSomeComment(postId);
-        PostCommentDto postCommentDto = new PostCommentDto(somePost, commentResponseDto);
+        List<CommentResponse> commentResponse = commentService.getSomeComment(postId);
+        PostCommentDto postCommentDto = new PostCommentDto(somePost, commentResponse);
         return new ResponseEntity<PostCommentDto>(postCommentDto, HttpStatus.valueOf(200));
 
     }
