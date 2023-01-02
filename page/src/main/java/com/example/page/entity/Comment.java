@@ -1,10 +1,8 @@
 package com.example.page.entity;
 
-import com.example.page.dto.comment.CommentRequestDto;
+import com.example.page.dto.comment.CommentRequest;
 import com.example.page.entity.user.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,8 +33,8 @@ public class Comment extends Timestamped {
         this.comment = comment;
     }
 
-    public void update(CommentRequestDto commentRequestDto) {
-        this.comment = commentRequestDto.getComment();
+    public void update(CommentRequest commentRequest) {
+        this.comment = commentRequest.getComment();
     }
 
 }

@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CommentResponseDto {
+public class CommentResponse {
 
     private String username;
     private String comment;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponse(Comment comment) {
         this.username = comment.getUser().getUsername();
         this.comment = comment.getComment();
     }
